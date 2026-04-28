@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>AI校验结果详情</title>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: #f4f6fa;
+    color: #1f2937;
+  }
+
+  .page {
+    min-height: 100vh;
+    max-width: 480px;
+    margin: 0 auto;
+    padding-bottom: 24px;
+    background: linear-gradient(180deg, #eef4ff 0, #f4f6fa 180px);
+  }
+
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 16px;
+    background: rgba(244, 246, 250, 0.95);
+    backdrop-filter: blur(8px);
+  }
+
+  .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    background: #ffffff;
+    color: #2563eb;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 700;
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.12);
+  }
+
+  .title-wrap h1 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .title-wrap p {
+    margin: 4px 0 0;
+    font-size: 12px;
+    color: #64748b;
+    line-height: 1.5;
+  }
+
+  .close-link {
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 24px;
+    line-height: 1;
+    padding: 4px;
+  }
+
+  .section {
+    background: #ffffff;
+    margin: 12px;
+    border-radius: 18px;
+    padding: 16px;
+    box-shadow: 0 10px 30px rgba(31, 41, 55, 0.05);
+  }
+
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .summary-card {
+    border-radius: 16px;
+    padding: 14px 12px;
+  }
+
+  .summary-card .label {
+    font-size: 12px;
+    color: #64748b;
+  }
+
+  .summary-card strong {
+    display: block;
+    margin-top: 8px;
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  .summary-card.rules {
+    background: #e9eef8;
+    color: #1d4ed8;
+  }
+
+  .summary-card.pass {
+    background: #e8f5ec;
+    color: #059669;
+  }
+
+  .summary-card.fail {
+    background: #fdecec;
+    color: #ef4444;
+  }
+
+  .section-title {
+    margin: 0 0 12px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    background: #ffffff;
+  }
+
+  table {
+    width: 100%;
+    min-width: 980px;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  th,
+  td {
+    padding: 12px 10px;
+    border-bottom: 1px solid #e5e7eb;
+    text-align: left;
+    vertical-align: top;
+    white-space: nowrap;
+  }
+
+  th {
+    background: #f8fafc;
+    color: #475569;
+    font-weight: 700;
+  }
+
+  thead tr.filter-row th {
+    padding: 10px 8px;
+    background: #f8fafc;
+    border-top: 1px solid #e5e7eb;
+  }
+
+  .table-filter {
+    width: 100%;
+    height: 34px;
+    border: 1px solid #dbe3ef;
+    border-radius: 10px;
+    background: #ffffff;
+    padding: 0 10px;
+    font-size: 12px;
+    color: #0f172a;
+    outline: none;
+  }
+
+  .table-filter::placeholder {
+    color: #94a3b8;
+  }
+
+  td.note {
+    white-space: normal;
+    line-height: 1.6;
+    min-width: 220px;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 52px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .chip.pass {
+    color: #15803d;
+    background: #dcfce7;
+  }
+
+  .chip.fail {
+    color: #dc2626;
+    background: #fee2e2;
+  }
+
+  .chip.high {
+    color: #dc2626;
+    background: #fee2e2;
+  }
+
+  .chip.mid {
+    color: #b45309;
+    background: #fef3c7;
+  }
+
+  .text-danger {
+    color: #dc2626;
+    font-weight: 600;
+  }
+
+  .table-tip {
+    margin-top: 10px;
+    font-size: 12px;
+    color: #64748b;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 360px) {
+    .summary-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+    <div class="topbar">
+      <div class="topbar-left">
+        <a class="back-link" href="index.html" aria-label="返回">&#8249;</a>
+        <div class="title-wrap">
+          <h1>AI校验结果详情</h1>
+          <p>适配移动端查看，明细表支持左右滑动浏览</p>
+        </div>
+      </div>
+      <a class="close-link" href="index.html" aria-label="关闭">&times;</a>
+    </div>
+
+    <section class="section">
+      <div class="summary-grid">
+        <div class="summary-card rules">
+          <div class="label">启用规则数</div>
+          <strong>8</strong>
+        </div>
+        <div class="summary-card pass">
+          <div class="label">通过项</div>
+          <strong>5</strong>
+        </div>
+        <div class="summary-card fail">
+          <div class="label">不通过项</div>
+          <strong>3</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">校验明细</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>文件名称</th>
+              <th>规则ID</th>
+              <th>检查项</th>
+              <th>校验结果</th>
+              <th>风险等级</th>
+              <th>是否强控制</th>
+              <th>结果说明</th>
+              <th>处理建议</th>
+            </tr>
+            <tr class="filter-row">
+              <th><input class="table-filter" type="text" value="" placeholder="文件名称"></th>
+              <th><input class="table-filter" type="text" value="" placeholder="规则ID"></th>
+              <th><input class="table-filter" type="text" value="" placeholder="检查项"></th>
+              <th>
+                <select class="table-filter">
+                  <option>全部</option>
+                  <option>通过</option>
+                  <option>不通过</option>
+                </select>
+              </th>
+              <th>
+                <select class="table-filter">
+                  <option>全部</option>
+                  <option>高</option>
+                  <option>中</option>
+                </select>
+              </th>
+              <th>
+                <select class="table-filter">
+                  <option>全部</option>
+                  <option>是</option>
+                  <option>否</option>
+                </select>
+              </th>
+              <th><input class="table-filter" type="text" value="" placeholder="结果说明"></th>
+              <th><input class="table-filter" type="text" value="" placeholder="处理建议"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>可研报告二期.pdf</td>
+              <td>TY-default-001</td>
+              <td>文件可打开且页数大于0</td>
+              <td><span class="chip pass">通过</span></td>
+              <td>-</td>
+              <td>否</td>
+              <td class="note">文件可正常打开。</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>可研报告二期.pdf</td>
+              <td>TY-default-002</td>
+              <td>日期格式校验</td>
+              <td><span class="chip pass">通过</span></td>
+              <td>-</td>
+              <td>否</td>
+              <td class="note">成文日期格式正确。</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>可行性研究报告.docx</td>
+              <td>ZD-KJ-JJ-A1-03-001</td>
+              <td>基础字段完整性</td>
+              <td><span class="chip fail">不通过</span></td>
+              <td><span class="chip high">高</span></td>
+              <td class="text-danger">是</td>
+              <td class="note">责任者信息缺失，触发强控制拦截。</td>
+              <td>补齐责任者字段</td>
+            </tr>
+            <tr>
+              <td>可行性研究报告.docx</td>
+              <td>ZD-KJ-JJ-A1-03-002</td>
+              <td>资料分类一致性</td>
+              <td><span class="chip fail">不通过</span></td>
+              <td><span class="chip high">高</span></td>
+              <td class="text-danger">是</td>
+              <td class="note">资料分类与识别结果不一致，触发强控制拦截。</td>
+              <td>返回调整档案分类</td>
+            </tr>
+            <tr>
+              <td>批复文件-补充件.pdf</td>
+              <td>TY-default-003</td>
+              <td>附件齐全性</td>
+              <td><span class="chip pass">通过</span></td>
+              <td>-</td>
+              <td>否</td>
+              <td class="note">附件齐全。</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>批复文件-补充件.pdf</td>
+              <td>ZD-KJ-JJ-A1-02-001</td>
+              <td>签字盖章识别</td>
+              <td><span class="chip pass">通过</span></td>
+              <td>-</td>
+              <td>否</td>
+              <td class="note">签字盖章识别通过。</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>施工组织设计-v3.docx</td>
+              <td>ZD-default-001</td>
+              <td>印章完整性</td>
+              <td><span class="chip pass">通过</span></td>
+              <td>-</td>
+              <td>否</td>
+              <td class="note">印章识别完整。</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>可行性研究报告.docx</td>
+              <td>TY-default-004</td>
+              <td>图像质量检查</td>
+              <td><span class="chip fail">不通过</span></td>
+              <td><span class="chip mid">中</span></td>
+              <td>否</td>
+              <td class="note">图像模糊影响识别准确度。</td>
+              <td>建议重新上传清晰扫描件</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

@@ -188,6 +188,36 @@
     font-weight: 600;
   }
 
+  .ai-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+
+  .detail-link-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 30px;
+    padding: 0 12px;
+    border-radius: 999px;
+    border: 1px solid #bfdbfe;
+    background: #eff6ff;
+    color: #2563eb;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .ai-toggle-btn {
+    border: 0;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+  }
+
   .arrow {
     width: 10px;
     height: 10px;
@@ -585,6 +615,12 @@
     max-height: 460px;
     overflow-y: auto;
     padding-right: 4px;
+  }
+
+  .ai-check-content.is-collapsed {
+    max-height: 0;
+    opacity: 0;
+    margin-top: 0;
   }
 
   .timeline {
@@ -1178,19 +1214,20 @@
     </section>
 
     <section class="section" style="background: #f0f7ff; border: 1px solid #dbeafe;">
-      <button class="collapsible-trigger" id="aiCheckTrigger" type="button">
-        <div class="section-header" style="margin-bottom: 0;">
-          <div style="display: flex; align-items: center; gap: 6px;">
-            <svg style="width:16px;height:16px;color:#2563eb" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-1H3a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2zM9 14a2 2 0 0 0-1.99 1.85L7 16v2a2 2 0 0 0 1.85 1.99L9 20h6a2 2 0 0 0 1.99-1.85L17 18v-2a2 2 0 0 0-1.85-1.99L15 14H9zm-3.86-5H5v7h.14A9.04 9.04 0 0 1 5 14a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5 9.04 9.04 0 0 1-.14 2H19v-7h-.14A4.98 4.98 0 0 0 14 11h-4a4.98 4.98 0 0 0-4.86-2z"/></svg>
-            <h3 class="section-title" style="color: #1e3a8a;">AI校验说明</h3>
-          </div>
-          <div class="trigger-right">
+      <div class="section-header" style="margin-bottom: 0;">
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <svg style="width:16px;height:16px;color:#2563eb" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-1H3a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2zM9 14a2 2 0 0 0-1.99 1.85L7 16v2a2 2 0 0 0 1.85 1.99L9 20h6a2 2 0 0 0 1.99-1.85L17 18v-2a2 2 0 0 0-1.85-1.99L15 14H9zm-3.86-5H5v7h.14A9.04 9.04 0 0 1 5 14a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5 9.04 9.04 0 0 1-.14 2H19v-7h-.14A4.98 4.98 0 0 0 14 11h-4a4.98 4.98 0 0 0-4.86-2z"/></svg>
+          <h3 class="section-title" style="color: #1e3a8a;">AI校验说明</h3>
+        </div>
+        <div class="ai-header-actions">
+          <a class="detail-link-btn" href="ai-detail.html">查看详情</a>
+          <button class="collapsible-trigger trigger-right ai-toggle-btn" id="aiCheckTrigger" type="button">
             <span>收起</span>
             <span class="arrow"></span>
-          </div>
+          </button>
         </div>
-      </button>
-      <div class="collapsible-content ai-check-content">
+      </div>
+      <div class="collapsible-content ai-check-content" id="aiCheckContent">
         <div class="ai-summary-count">3项不通过</div>
         <div class="ai-fail-list">
           <div class="ai-fail-card">
@@ -1384,8 +1421,8 @@
     const aiCheckTrigger = document.getElementById('aiCheckTrigger');
     const historyTrigger = document.getElementById('historyTrigger');
     const approvalTrigger = document.getElementById('approvalTrigger');
+    const aiCheckContent = document.getElementById('aiCheckContent');
     const collapsibleConfigs = [
-      { trigger: aiCheckTrigger, collapsedText: '展开', expandedText: '收起' },
       { trigger: basicInfoTrigger, collapsedText: '展开', expandedText: '收起' },
       { trigger: historyTrigger, collapsedText: '展开', expandedText: '收起' },
       { trigger: approvalTrigger, collapsedText: '展开', expandedText: '收起' }
@@ -1397,6 +1434,13 @@
         item.trigger.classList.toggle('collapsed');
         label.textContent = item.trigger.classList.contains('collapsed') ? item.collapsedText : item.expandedText;
       });
+    });
+
+    const aiToggleLabel = aiCheckTrigger.querySelector('span');
+    aiCheckTrigger.addEventListener('click', function () {
+      const collapsed = aiCheckContent.classList.toggle('is-collapsed');
+      aiCheckTrigger.classList.toggle('collapsed', collapsed);
+      aiToggleLabel.textContent = collapsed ? '展开' : '收起';
     });
 
     document.querySelectorAll('.file-toggle').forEach(function (toggle) {
