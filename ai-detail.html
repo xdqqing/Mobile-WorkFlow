@@ -134,45 +134,20 @@
     color: #0f172a;
   }
 
-  .table-wrap {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    border: 1px solid #e2e8f0;
-    border-radius: 16px;
-    background: #ffffff;
+  .detail-filters {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 14px;
   }
 
-  table {
-    width: 100%;
-    min-width: 980px;
-    border-collapse: collapse;
-    font-size: 13px;
-  }
-
-  th,
-  td {
-    padding: 12px 10px;
-    border-bottom: 1px solid #e5e7eb;
-    text-align: left;
-    vertical-align: top;
-    white-space: nowrap;
-  }
-
-  th {
-    background: #f8fafc;
-    color: #475569;
-    font-weight: 700;
-  }
-
-  thead tr.filter-row th {
-    padding: 10px 8px;
-    background: #f8fafc;
-    border-top: 1px solid #e5e7eb;
+  .detail-filter.full {
+    grid-column: 1 / -1;
   }
 
   .table-filter {
     width: 100%;
-    height: 34px;
+    height: 36px;
     border: 1px solid #dbe3ef;
     border-radius: 10px;
     background: #ffffff;
@@ -186,10 +161,63 @@
     color: #94a3b8;
   }
 
-  td.note {
-    white-space: normal;
-    line-height: 1.6;
-    min-width: 220px;
+  .detail-list {
+    display: grid;
+    gap: 12px;
+  }
+
+  .detail-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    background: #ffffff;
+    padding: 14px;
+  }
+
+  .detail-card-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .detail-file {
+    font-size: 15px;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.5;
+  }
+
+  .detail-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .detail-grid {
+    display: grid;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .detail-item {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 10px 12px;
+  }
+
+  .detail-label {
+    font-size: 12px;
+    color: #64748b;
+    line-height: 1.4;
+  }
+
+  .detail-value {
+    margin-top: 6px;
+    font-size: 13px;
+    color: #0f172a;
+    line-height: 1.7;
+    word-break: break-word;
   }
 
   .chip {
@@ -201,6 +229,8 @@
     border-radius: 999px;
     font-size: 12px;
     font-weight: 600;
+    color: #15803d;
+    background: #dcfce7;
   }
 
   .chip.pass {
@@ -228,15 +258,9 @@
     font-weight: 600;
   }
 
-  .table-tip {
-    margin-top: 10px;
-    font-size: 12px;
-    color: #64748b;
-    line-height: 1.6;
-  }
-
   @media (max-width: 360px) {
-    .summary-grid {
+    .summary-grid,
+    .detail-filters {
       grid-template-columns: 1fr;
     }
   }
@@ -274,131 +298,239 @@
 
     <section class="section">
       <h2 class="section-title">校验明细</h2>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>文件名称</th>
-              <th>规则ID</th>
-              <th>检查项</th>
-              <th>校验结果</th>
-              <th>风险等级</th>
-              <th>是否强控制</th>
-              <th>结果说明</th>
-              <th>处理建议</th>
-            </tr>
-            <tr class="filter-row">
-              <th><input class="table-filter" type="text" value="" placeholder="文件名称"></th>
-              <th><input class="table-filter" type="text" value="" placeholder="规则ID"></th>
-              <th><input class="table-filter" type="text" value="" placeholder="检查项"></th>
-              <th>
-                <select class="table-filter">
-                  <option>全部</option>
-                  <option>通过</option>
-                  <option>不通过</option>
-                </select>
-              </th>
-              <th>
-                <select class="table-filter">
-                  <option>全部</option>
-                  <option>高</option>
-                  <option>中</option>
-                </select>
-              </th>
-              <th>
-                <select class="table-filter">
-                  <option>全部</option>
-                  <option>是</option>
-                  <option>否</option>
-                </select>
-              </th>
-              <th><input class="table-filter" type="text" value="" placeholder="结果说明"></th>
-              <th><input class="table-filter" type="text" value="" placeholder="处理建议"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>可研报告二期.pdf</td>
-              <td>TY-default-001</td>
-              <td>文件可打开且页数大于0</td>
-              <td><span class="chip pass">通过</span></td>
-              <td>-</td>
-              <td>否</td>
-              <td class="note">文件可正常打开。</td>
-              <td>-</td>
-            </tr>
-            <tr>
-              <td>可研报告二期.pdf</td>
-              <td>TY-default-002</td>
-              <td>日期格式校验</td>
-              <td><span class="chip pass">通过</span></td>
-              <td>-</td>
-              <td>否</td>
-              <td class="note">成文日期格式正确。</td>
-              <td>-</td>
-            </tr>
-            <tr>
-              <td>可行性研究报告.docx</td>
-              <td>ZD-KJ-JJ-A1-03-001</td>
-              <td>基础字段完整性</td>
-              <td><span class="chip fail">不通过</span></td>
-              <td><span class="chip high">高</span></td>
-              <td class="text-danger">是</td>
-              <td class="note">责任者信息缺失，触发强控制拦截。</td>
-              <td>补齐责任者字段</td>
-            </tr>
-            <tr>
-              <td>可行性研究报告.docx</td>
-              <td>ZD-KJ-JJ-A1-03-002</td>
-              <td>资料分类一致性</td>
-              <td><span class="chip fail">不通过</span></td>
-              <td><span class="chip high">高</span></td>
-              <td class="text-danger">是</td>
-              <td class="note">资料分类与识别结果不一致，触发强控制拦截。</td>
-              <td>返回调整档案分类</td>
-            </tr>
-            <tr>
-              <td>批复文件-补充件.pdf</td>
-              <td>TY-default-003</td>
-              <td>附件齐全性</td>
-              <td><span class="chip pass">通过</span></td>
-              <td>-</td>
-              <td>否</td>
-              <td class="note">附件齐全。</td>
-              <td>-</td>
-            </tr>
-            <tr>
-              <td>批复文件-补充件.pdf</td>
-              <td>ZD-KJ-JJ-A1-02-001</td>
-              <td>签字盖章识别</td>
-              <td><span class="chip pass">通过</span></td>
-              <td>-</td>
-              <td>否</td>
-              <td class="note">签字盖章识别通过。</td>
-              <td>-</td>
-            </tr>
-            <tr>
-              <td>施工组织设计-v3.docx</td>
-              <td>ZD-default-001</td>
-              <td>印章完整性</td>
-              <td><span class="chip pass">通过</span></td>
-              <td>-</td>
-              <td>否</td>
-              <td class="note">印章识别完整。</td>
-              <td>-</td>
-            </tr>
-            <tr>
-              <td>可行性研究报告.docx</td>
-              <td>TY-default-004</td>
-              <td>图像质量检查</td>
-              <td><span class="chip fail">不通过</span></td>
-              <td><span class="chip mid">中</span></td>
-              <td>否</td>
-              <td class="note">图像模糊影响识别准确度。</td>
-              <td>建议重新上传清晰扫描件</td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="detail-list">
+        <article class="detail-card">
+          <div class="detail-card-head">
+            <div class="detail-file">可研报告二期.pdf</div>
+            <span class="chip pass">通过</span>
+          </div>
+          <div class="detail-card-tags">
+            <span class="chip">低风险</span>
+            <span class="chip">非强控制</span>
+          </div>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <div class="detail-label">检查项</div>
+              <div class="detail-value">文件可打开且页数大于0</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Agent校验逻辑</div>
+              <div class="detail-value">由业档底座预先校验文件未损坏且页数大于0，若文件无法打开或页数异常，直接禁止提交。</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">结果说明</div>
+              <div class="detail-value">文件可正常打开。</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">处理建议</div>
+              <div class="detail-value">-</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="detail-card">
+          <div class="detail-card-head">
+            <div class="detail-file">可研报告二期.pdf</div>
+            <span class="chip pass">通过</span>
+          </div>
+          <div class="detail-card-tags">
+            <span class="chip">低风险</span>
+            <span class="chip">非强控制</span>
+          </div>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <div class="detail-label">检查项</div>
+              <div class="detail-value">日期格式校验</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Agent校验逻辑</div>
+              <div class="detail-value">识别文件内容中的结束日期，检查是否早于当前系统时间，日期格式是否符合规范（YYYY-MM-DD），异常则预警，若无结束日期则按通过处理。</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">结果说明</div>
+              <div class="detail-value">成文日期格式正确。</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">处理建议</div>
+              <div class="detail-value">-</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="detail-card">
+          <div class="detail-card-head">
+            <div class="detail-file">可行性研究报告.docx</div>
+            <span class="chip fail">不通过</span>
+          </div>
+          <div class="detail-card-tags">
+            <span class="chip high">高风险</span>
+            <span class="chip fail">强控制</span>
+          </div>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <div class="detail-label">检查项</div>
+              <div class="detail-value">基础字段完整性</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Agent校验逻辑</div>
+              <div class="detail-value">NLP提取文档封面及正文，校验是否包含“项目名称”“建设规模”“投资估算”等核心必备要素，缺失任一要素即判定不通过。</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">结果说明</div>
+              <div class="detail-value">责任者信息缺失，触发强控制拦截。</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">处理建议</div>
+              <div class="detail-value">补齐责任者字段</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="detail-card">
+          <div class="detail-card-head">
+            <div class="detail-file">可行性研究报告.docx</div>
+            <span class="chip fail">不通过</span>
+          </div>
+          <div class="detail-card-tags">
+            <span class="chip high">高风险</span>
+            <span class="chip fail">强控制</span>
+          </div>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <div class="detail-label">检查项</div>
+              <div class="detail-value">资料分类一致性</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Agent校验逻辑</div>
+              <div class="detail-value">检查收文登记信息与文件首页中的来文单位、文号、收文日期是否一致，若关键信息存在不一致则提示异常。</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">结果说明</div>
+              <div class="detail-value">资料分类与识别结果不一致，触发强控制拦截。</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">处理建议</div>
+              <div class="detail-value">返回调整档案分类</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="detail-card">
+          <div class="detail-card-head">
+            <div class="detail-file">可行性研究报告.docx</div>
+            <span class="chip fail">不通过</span>
+          </div>
+          <div class="detail-card-tags">
+            <span class="chip mid">中风险</span>
+            <span class="chip">非强控制</span>
+          </div>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <div class="detail-label">检查项</div>
+              <div class="detail-value">图像质量检查</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Agent校验逻辑</div>
+              <div class="detail-value">检测扫描件或照片是否清晰可读，如存在明显模糊、重影、分辨率过低、倾斜角度超过5度或关键内容被遮挡超过10%，判定为不通过。</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">结果说明</div>
+              <div class="detail-value">图像模糊影响识别准确度。</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">处理建议</div>
+              <div class="detail-value">建议重新上传清晰扫描件</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="detail-card">
+          <div class="detail-card-head">
+            <div class="detail-file">批复文件-补充件.pdf</div>
+            <span class="chip pass">通过</span>
+          </div>
+          <div class="detail-card-tags">
+            <span class="chip">低风险</span>
+            <span class="chip">非强控制</span>
+          </div>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <div class="detail-label">检查项</div>
+              <div class="detail-value">附件齐全性</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Agent校验逻辑</div>
+              <div class="detail-value">当文档内容出现“附件”关键词时，检测附件材料是否齐全；若未触发前置条件，则不校验并按通过处理。</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">结果说明</div>
+              <div class="detail-value">附件齐全。</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">处理建议</div>
+              <div class="detail-value">-</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="detail-card">
+          <div class="detail-card-head">
+            <div class="detail-file">批复文件-补充件.pdf</div>
+            <span class="chip pass">通过</span>
+          </div>
+          <div class="detail-card-tags">
+            <span class="chip">低风险</span>
+            <span class="chip">非强控制</span>
+          </div>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <div class="detail-label">检查项</div>
+              <div class="detail-value">签字盖章识别</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Agent校验逻辑</div>
+              <div class="detail-value">图像识别封面及落款区域，检查编制单位是否加盖清晰公章及主要编制负责人签字；若印章主体无法辨识或签字缺失则判定不通过。</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">结果说明</div>
+              <div class="detail-value">签字盖章识别通过。</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">处理建议</div>
+              <div class="detail-value">-</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="detail-card">
+          <div class="detail-card-head">
+            <div class="detail-file">施工组织设计-v3.docx</div>
+            <span class="chip pass">通过</span>
+          </div>
+          <div class="detail-card-tags">
+            <span class="chip">低风险</span>
+            <span class="chip">非强控制</span>
+          </div>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <div class="detail-label">检查项</div>
+              <div class="detail-value">印章完整性</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Agent校验逻辑</div>
+              <div class="detail-value">图像识别封面及落款区域，检查编制单位是否加盖清晰公章及主要编制负责人签字；若印章主体无法辨识或签字缺失则判定不通过。</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">结果说明</div>
+              <div class="detail-value">印章识别完整。</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">处理建议</div>
+              <div class="detail-value">-</div>
+            </div>
+          </div>
+        </article>
+
       </div>
     </section>
   </div>
