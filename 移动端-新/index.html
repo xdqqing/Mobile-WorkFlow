@@ -241,7 +241,8 @@
   }
 
   .collapsible-trigger.collapsed + .collapsible-content,
-  .file-toggle.collapsed + .collapsible-content {
+  .file-toggle.collapsed + .collapsible-content,
+  .file-toggle.collapsed + .ai-file-bubble + .collapsible-content {
     max-height: 0;
     opacity: 0;
     margin-top: 0;
@@ -262,6 +263,20 @@
   .file-stack {
     display: grid;
     gap: 12px;
+  }
+
+  .file-card.is-hidden {
+    display: none;
+  }
+
+  .file-list-more {
+    justify-self: center;
+    color: #2563eb;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    padding: 2px 8px;
   }
 
   .file-card {
@@ -360,10 +375,56 @@
       border: 1px solid #bbf7d0;
     }
 
-    .mini-tag.ai-fail {
+  .mini-tag.ai-fail {
       color: #b91c1c;
       background: #fee2e2;
       border: 1px solid #fecaca;
+    }
+
+    .ai-file-bubble {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 6px 14px 14px;
+      min-height: 30px;
+      padding: 5px 12px;
+      border-radius: 12px;
+      border: 1px solid #bfdbfe;
+      background: #eff6ff;
+      color: #1d4ed8;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1.35;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    }
+
+    .ai-file-bubble-text {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .ai-file-bubble::after {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-right: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(-45deg);
+      flex-shrink: 0;
+    }
+
+    .ai-file-bubble.has-fail {
+      border-color: #bfdbfe;
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+
+    .ai-file-bubble .fail-num {
+      color: #dc2626;
     }
 
     .file-body {
@@ -1103,7 +1164,7 @@
           <h3 class="section-title">文件清单</h3>
           <div class="section-desc file-hint">点击文件名称预览文件</div>
         </div>
-        <div class="section-desc">共 2 个文件</div>
+        <div class="section-desc">共 4 个文件</div>
       </div>
       <div class="file-stack">
           <article class="file-card">
@@ -1122,6 +1183,7 @@
                 <span class="mini-tag type">投资立项文件-审批材料</span>
               </div>
             </button>
+            <a class="ai-file-bubble" href="ai-detail.html?file=approval"><span class="ai-file-bubble-text">AI校验：通过3项，不通过<span class="fail-num">0</span>项，已全部填写情况说明</span></a>
             <div class="collapsible-content">
               <div class="file-body">
                 <div class="detail-grid">
@@ -1175,6 +1237,7 @@
                 <span class="mini-tag ai-fail">文件已替换</span>
               </div>
             </button>
+            <a class="ai-file-bubble has-fail" href="ai-detail.html?file=feasibility"><span class="ai-file-bubble-text">AI校验：通过2项，不通过<span class="fail-num">3</span>项，已全部填写情况说明</span></a>
             <div class="collapsible-content">
               <div class="file-body">
                 <div class="detail-grid">
@@ -1210,90 +1273,89 @@
               </div>
             </div>
           </article>
-      </div>
-    </section>
 
-    <section class="section" style="background: #f0f7ff; border: 1px solid #dbeafe;">
-      <div class="section-header" style="margin-bottom: 0;">
-        <div style="display: flex; align-items: center; gap: 6px;">
-          <svg style="width:16px;height:16px;color:#2563eb" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-1H3a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2zM9 14a2 2 0 0 0-1.99 1.85L7 16v2a2 2 0 0 0 1.85 1.99L9 20h6a2 2 0 0 0 1.99-1.85L17 18v-2a2 2 0 0 0-1.85-1.99L15 14H9zm-3.86-5H5v7h.14A9.04 9.04 0 0 1 5 14a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5 9.04 9.04 0 0 1-.14 2H19v-7h-.14A4.98 4.98 0 0 0 14 11h-4a4.98 4.98 0 0 0-4.86-2z"/></svg>
-          <h3 class="section-title" style="color: #1e3a8a;">AI校验说明</h3>
-        </div>
-        <div class="ai-header-actions">
-          <a class="detail-link-btn" href="ai-detail.html">查看详情</a>
-          <button class="collapsible-trigger trigger-right ai-toggle-btn" id="aiCheckTrigger" type="button">
-            <span>收起</span>
-            <span class="arrow"></span>
-          </button>
-        </div>
-      </div>
-      <div class="collapsible-content ai-check-content" id="aiCheckContent">
-        <div class="ai-summary-count">3项不通过</div>
-        <div class="ai-fail-list">
-          <div class="ai-fail-card">
-            <div class="ai-fail-head">
-              <div class="ai-file-name">可行性研究报告.docx</div>
-              <span class="risk-tag high">高风险</span>
-            </div>
-            <div class="ai-field-grid">
-              <div class="ai-field">
-                <div class="ai-label">检查项</div>
-                <div class="ai-value">基础字段完整性</div>
+          <article class="file-card">
+            <button class="file-card-header file-toggle collapsed" type="button">
+              <div class="file-card-top">
+                <span class="file-index">03</span>
+                <div class="file-card-title">
+                  <div class="file-name" data-preview="投资估算说明.pdf">投资估算说明.pdf</div>
+                </div>
+                <div class="trigger-right">
+                  <span>详情</span>
+                  <span class="arrow"></span>
+                </div>
               </div>
-              <div class="ai-field">
-                <div class="ai-label">结果说明</div>
-                <div class="ai-value">责任者信息缺失，触发强控制拦截。</div>
+              <div class="file-meta-line">
+                <span class="mini-tag type">项目论证文件-投资估算</span>
+              </div>
+            </button>
+            <a class="ai-file-bubble has-fail" href="ai-detail.html?file=estimate"><span class="ai-file-bubble-text">AI校验：通过1项，不通过<span class="fail-num">3</span>项，已全部填写情况说明</span></a>
+            <div class="collapsible-content">
+              <div class="file-body">
+                <div class="detail-grid">
+                  <div class="detail-item">
+                    <div class="card-detail-label">题名</div>
+                    <div class="card-detail-value">深汕智造城基础设施一期项目投资估算说明</div>
+                  </div>
+                  <div class="detail-item">
+                    <div class="card-detail-label">责任者</div>
+                    <div class="card-detail-value">市场投资管理中心</div>
+                  </div>
+                  <div class="detail-item">
+                    <div class="card-detail-label">成文日期</div>
+                    <div class="card-detail-value">2026-03-19</div>
+                  </div>
+                  <div class="detail-item">
+                    <div class="card-detail-label">金额</div>
+                    <div class="card-detail-value">18,600万元</div>
+                  </div>
+                </div>
               </div>
             </div>
-            <div class="remark-box">
-              <div class="remark-label">提交说明</div>
-              <textarea class="ai-remark-input" data-file="可行性研究报告.docx" data-item="基础字段完整性" placeholder="校验不通过，请填写提交说明。">原文件已修改并替换。</textarea>
-            </div>
-          </div>
+          </article>
 
-          <div class="ai-fail-card">
-            <div class="ai-fail-head">
-              <div class="ai-file-name">可行性研究报告.docx</div>
-              <span class="risk-tag high">高风险</span>
-            </div>
-            <div class="ai-field-grid">
-              <div class="ai-field">
-                <div class="ai-label">检查项</div>
-                <div class="ai-value">资料分类一致性</div>
+          <article class="file-card is-hidden" data-extra-file>
+            <button class="file-card-header file-toggle collapsed" type="button">
+              <div class="file-card-top">
+                <span class="file-index">04</span>
+                <div class="file-card-title">
+                  <div class="file-name" data-preview="会议纪要.pdf">会议纪要.pdf</div>
+                </div>
+                <div class="trigger-right">
+                  <span>详情</span>
+                  <span class="arrow"></span>
+                </div>
               </div>
-              <div class="ai-field">
-                <div class="ai-label">结果说明</div>
-                <div class="ai-value">资料分类与识别结果不一致，触发强控制拦截。</div>
+              <div class="file-meta-line">
+                <span class="mini-tag type">决策依据文件-会议纪要</span>
+              </div>
+            </button>
+            <a class="ai-file-bubble has-fail" href="ai-detail.html?file=meeting"><span class="ai-file-bubble-text">AI校验：通过2项，不通过<span class="fail-num">1</span>项，已全部填写情况说明</span></a>
+            <div class="collapsible-content">
+              <div class="file-body">
+                <div class="detail-grid">
+                  <div class="detail-item">
+                    <div class="card-detail-label">题名</div>
+                    <div class="card-detail-value">深汕智造城基础设施一期项目立项专题会议纪要</div>
+                  </div>
+                  <div class="detail-item">
+                    <div class="card-detail-label">责任者</div>
+                    <div class="card-detail-value">企管数字化中心</div>
+                  </div>
+                  <div class="detail-item">
+                    <div class="card-detail-label">成文日期</div>
+                    <div class="card-detail-value">2026-03-20</div>
+                  </div>
+                  <div class="detail-item">
+                    <div class="card-detail-label">会议编号</div>
+                    <div class="card-detail-value">深汕投纪〔2026〕05号</div>
+                  </div>
+                </div>
               </div>
             </div>
-            <div class="remark-box">
-              <div class="remark-label">提交说明</div>
-              <textarea class="ai-remark-input" data-file="可行性研究报告.docx" data-item="资料分类一致性" placeholder="校验不通过，请填写提交说明。">资料分类无问题，无需修改。</textarea>
-            </div>
-          </div>
-
-          <div class="ai-fail-card">
-            <div class="ai-fail-head">
-              <div class="ai-file-name">可行性研究报告.docx</div>
-              <span class="risk-tag mid">中风险</span>
-            </div>
-            <div class="ai-field-grid">
-              <div class="ai-field">
-                <div class="ai-label">检查项</div>
-                <div class="ai-value">图像质量检查</div>
-              </div>
-              <div class="ai-field">
-                <div class="ai-label">结果说明</div>
-                <div class="ai-value">部分扫描页边缘模糊，影响关键字段识别。</div>
-              </div>
-            </div>
-            <div class="remark-box">
-              <div class="remark-label">提交说明</div>
-              <textarea class="ai-remark-input" data-file="可行性研究报告.docx" data-item="图像质量检查" placeholder="校验不通过，请填写提交说明。"></textarea>
-            </div>
-          </div>
-        </div>
-        <div class="ai-card-foot">针对不通过文件，请填写提交说明或替换文件后再提交。</div>
+          </article>
+          <a class="file-list-more" href="file-list.html">查看更多</a>
       </div>
     </section>
 
@@ -1378,7 +1440,6 @@
         </div>
       </button>
       <div class="collapsible-content approval-body">
-        <div class="approval-tip" id="aiApprovalTip">AI校验存在 3 项不通过，已补充2项提提交说明，1项待处理。</div>
         <div class="opinion-toggle">
           <button class="opinion-option pass active" data-opinion="同意" type="button">同意</button>
           <button class="opinion-option reject" data-opinion="不同意" type="button">不同意</button>
@@ -1418,10 +1479,8 @@
 
   <script>
     const basicInfoTrigger = document.getElementById('basicInfoTrigger');
-    const aiCheckTrigger = document.getElementById('aiCheckTrigger');
     const historyTrigger = document.getElementById('historyTrigger');
     const approvalTrigger = document.getElementById('approvalTrigger');
-    const aiCheckContent = document.getElementById('aiCheckContent');
     const collapsibleConfigs = [
       { trigger: basicInfoTrigger, collapsedText: '展开', expandedText: '收起' },
       { trigger: historyTrigger, collapsedText: '展开', expandedText: '收起' },
@@ -1436,13 +1495,6 @@
       });
     });
 
-    const aiToggleLabel = aiCheckTrigger.querySelector('span');
-    aiCheckTrigger.addEventListener('click', function () {
-      const collapsed = aiCheckContent.classList.toggle('is-collapsed');
-      aiCheckTrigger.classList.toggle('collapsed', collapsed);
-      aiToggleLabel.textContent = collapsed ? '展开' : '收起';
-    });
-
     document.querySelectorAll('.file-toggle').forEach(function (toggle) {
       const indicator = toggle.querySelector('.trigger-right');
       const label = indicator.querySelector('span');
@@ -1455,7 +1507,6 @@
     const opinionInput = document.getElementById('opinionInput');
     const counter = document.getElementById('counter');
     const opinionType = document.getElementById('opinionType');
-    const aiApprovalTip = document.getElementById('aiApprovalTip');
     const aiRemarkInputs = Array.from(document.querySelectorAll('.ai-remark-input'));
 
     function updateCounter() {
@@ -1466,13 +1517,6 @@
       return aiRemarkInputs.filter(function (input) {
         return !input.value.trim();
       }).length;
-    }
-
-    function updateAIRemarkStatus() {
-      const pendingCount = getPendingRemarkCount();
-      const totalFailCount = aiRemarkInputs.length;
-      const filledCount = totalFailCount - pendingCount;
-      aiApprovalTip.textContent = 'AI校验存在 ' + totalFailCount + ' 项不通过，已补充' + filledCount + '项提提交说明，' + pendingCount + '项待处理。';
     }
 
     function resizeRemarkInput(input) {
@@ -1487,10 +1531,8 @@
       resizeRemarkInput(input);
       input.addEventListener('input', function () {
         resizeRemarkInput(input);
-        updateAIRemarkStatus();
       });
     });
-    updateAIRemarkStatus();
 
     document.querySelectorAll('.opinion-option').forEach(function (button) {
       button.addEventListener('click', function () {

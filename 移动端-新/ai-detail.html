@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>AI校验结果详情</title>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: #f4f6fa;
+    color: #1f2937;
+  }
+
+  .page {
+    min-height: 100vh;
+    max-width: 480px;
+    margin: 0 auto;
+    padding-bottom: 24px;
+    background: linear-gradient(180deg, #eef4ff 0, #f4f6fa 180px);
+  }
+
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 16px;
+    background: rgba(244, 246, 250, 0.95);
+    backdrop-filter: blur(8px);
+  }
+
+  .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    background: #ffffff;
+    color: #2563eb;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 700;
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.12);
+  }
+
+  .title-wrap {
+    min-width: 0;
+  }
+
+  .title-wrap h1 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .title-wrap p {
+    margin: 4px 0 0;
+    font-size: 12px;
+    color: #64748b;
+    line-height: 1.5;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .close-link {
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 24px;
+    line-height: 1;
+    padding: 4px;
+  }
+
+  .section {
+    background: #ffffff;
+    margin: 12px;
+    border-radius: 18px;
+    padding: 16px;
+    box-shadow: 0 10px 30px rgba(31, 41, 55, 0.05);
+  }
+
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .summary-card {
+    border-radius: 14px;
+    padding: 10px 12px;
+  }
+
+  .summary-card .label {
+    font-size: 12px;
+    color: #64748b;
+  }
+
+  .summary-card strong {
+    display: block;
+    margin-top: 6px;
+    font-size: 17px;
+    line-height: 1;
+  }
+
+  .summary-card.pass {
+    background: #e8f5ec;
+    color: #059669;
+  }
+
+  .summary-card.fail {
+    background: #fdecec;
+    color: #ef4444;
+  }
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .section-desc {
+    color: #94a3b8;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .detail-list {
+    display: grid;
+    gap: 12px;
+  }
+
+  .detail-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    background: #ffffff;
+    padding: 14px;
+  }
+
+  .detail-card-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .detail-file {
+    font-size: 15px;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.5;
+  }
+
+  .detail-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .detail-status-tags {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .detail-grid {
+    display: grid;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .detail-item {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 10px 12px;
+  }
+
+  .detail-label {
+    font-size: 12px;
+    color: #64748b;
+    line-height: 1.4;
+  }
+
+  .detail-value {
+    margin-top: 6px;
+    font-size: 13px;
+    color: #0f172a;
+    line-height: 1.7;
+    word-break: break-word;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 52px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #15803d;
+    background: #dcfce7;
+    white-space: nowrap;
+  }
+
+  .chip.pass {
+    color: #15803d;
+    background: #dcfce7;
+  }
+
+  .chip.fail,
+  .chip.high {
+    color: #dc2626;
+    background: #fee2e2;
+  }
+
+  .chip.mid {
+    color: #b45309;
+    background: #fef3c7;
+  }
+
+  @media (max-width: 360px) {
+    .summary-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+    <div class="topbar">
+      <div class="topbar-left">
+        <a class="back-link" id="backLink" href="index.html" aria-label="返回">&#8249;</a>
+        <div class="title-wrap">
+          <h1>AI校验结果详情</h1>
+          <p id="pageSubtitle">查看当前文件的通过项与不通过项</p>
+        </div>
+      </div>
+      <a class="close-link" id="closeLink" href="index.html" aria-label="关闭">&times;</a>
+    </div>
+
+    <section class="section">
+      <div class="summary-grid">
+        <div class="summary-card fail">
+          <div class="label">不通过项</div>
+          <strong id="failCount">0</strong>
+        </div>
+        <div class="summary-card pass">
+          <div class="label">通过项</div>
+          <strong id="passCount">0</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2 class="section-title">AI校验结果详情</h2>
+        <div class="section-desc" id="detailCount">共 0 项</div>
+      </div>
+      <div class="detail-list" id="detailList"></div>
+    </section>
+  </div>
+
+  <script>
+    const files = {
+      approval: {
+        name: '项目立项审批表.pdf',
+        shortName: '立项审批表',
+        items: [
+          {
+            status: 'pass',
+            risk: '低风险',
+            control: '非强控制',
+            item: '文件可打开且页数大于0',
+            logic: '由业档底座预先校验文件未损坏且页数大于0，若文件无法打开或页数异常，直接禁止提交。',
+            result: '文件可正常打开。',
+            advice: '-',
+            remark: ''
+          },
+          {
+            status: 'pass',
+            risk: '低风险',
+            control: '非强控制',
+            item: '基础字段完整性',
+            logic: '识别题名、责任者、成文日期、文号、项目名称、管理组织和法人组织等核心字段。',
+            result: '核心字段均已识别且内容完整。',
+            advice: '-',
+            remark: ''
+          },
+          {
+            status: 'pass',
+            risk: '低风险',
+            control: '非强控制',
+            item: '资料分类一致性',
+            logic: '比对文件类型与档案分类、材料标签是否匹配。',
+            result: '文件与“投资立项文件-审批材料”分类一致。',
+            advice: '-',
+            remark: ''
+          }
+        ]
+      },
+      feasibility: {
+        name: '可行性研究报告.docx',
+        shortName: '可研报告',
+        items: [
+          {
+            status: 'pass',
+            risk: '低风险',
+            control: '非强控制',
+            item: '文件可打开且页数大于0',
+            logic: '由业档底座预先校验文件未损坏且页数大于0，若文件无法打开或页数异常，直接禁止提交。',
+            result: '文件可正常打开。',
+            advice: '-',
+            remark: ''
+          },
+          {
+            status: 'pass',
+            risk: '低风险',
+            control: '非强控制',
+            item: '日期格式校验',
+            logic: '识别文件内容中的成文日期，检查日期格式是否符合规范。',
+            result: '成文日期格式正确。',
+            advice: '-',
+            remark: ''
+          },
+          {
+            status: 'fail',
+            risk: '高风险',
+            control: '强控制',
+            item: '基础字段完整性',
+            logic: 'NLP提取文档封面及正文，校验是否包含“项目名称”“建设规模”“投资估算”等核心必备要素。',
+            result: '责任者信息缺失，触发强控制拦截。',
+            advice: '补齐责任者字段',
+            remark: '原文件已修改并替换。'
+          },
+          {
+            status: 'fail',
+            risk: '高风险',
+            control: '强控制',
+            item: '资料分类一致性',
+            logic: '检查文件首页信息与当前文件分类是否一致，若关键信息存在不一致则提示异常。',
+            result: '资料分类与识别结果不一致，触发强控制拦截。',
+            advice: '返回调整档案分类',
+            remark: '资料分类无问题，无需修改。'
+          },
+          {
+            status: 'fail',
+            risk: '中风险',
+            control: '非强控制',
+            item: '图像质量检查',
+            logic: '检测扫描件或照片是否清晰可读，如存在明显模糊、重影、分辨率过低或关键内容被遮挡，判定为不通过。',
+            result: '部分扫描页边缘模糊，影响关键字段识别。',
+            advice: '建议重新上传清晰扫描件',
+            remark: '已重新上传清晰扫描件。'
+          }
+        ]
+      },
+      estimate: {
+        name: '投资估算说明.pdf',
+        shortName: '投资估算',
+        items: [
+          {
+            status: 'pass',
+            risk: '低风险',
+            item: '文件可打开且页数大于0',
+            result: '文件可正常打开。',
+            remark: ''
+          },
+          {
+            status: 'fail',
+            risk: '高风险',
+            item: '金额字段完整性',
+            result: '投资估算金额字段缺少测算依据页码。',
+            remark: '已补充投资估算测算依据说明。'
+          },
+          {
+            status: 'fail',
+            risk: '高风险',
+            item: '测算口径一致性',
+            result: '估算口径与可研报告中的投资规模存在差异。',
+            remark: '已按可研报告口径重新核对。'
+          },
+          {
+            status: 'fail',
+            risk: '中风险',
+            item: '资料分类一致性',
+            result: '文件名称与材料分类匹配度偏低。',
+            remark: '确认该文件为投资估算附件。'
+          }
+        ]
+      },
+      meeting: {
+        name: '会议纪要.pdf',
+        shortName: '会议纪要',
+        items: [
+          {
+            status: 'pass',
+            risk: '低风险',
+            item: '会议日期识别',
+            result: '会议日期格式正确且早于申请日期。',
+            remark: ''
+          },
+          {
+            status: 'pass',
+            risk: '低风险',
+            item: '决策结论完整性',
+            result: '已识别明确立项结论。',
+            remark: ''
+          },
+          {
+            status: 'fail',
+            risk: '中风险',
+            item: '资料分类一致性',
+            result: '会议纪要缺少会议主持人信息。',
+            remark: '已补充会议主持人情况说明。'
+          }
+        ]
+      }
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const selectedFile = params.get('file') || 'all';
+    const returnUrl = params.get('from') === 'file-list' ? 'file-list.html' : 'index.html';
+    const activeKey = files[selectedFile] ? selectedFile : 'all';
+    const visibleItems = activeKey === 'all'
+      ? Object.keys(files).flatMap(function (key) {
+          return files[key].items.map(function (item) {
+            return Object.assign({ fileName: files[key].name }, item);
+          });
+        })
+      : files[activeKey].items.map(function (item) {
+          return Object.assign({ fileName: files[activeKey].name }, item);
+        });
+
+    const pageSubtitle = document.getElementById('pageSubtitle');
+    const passCount = document.getElementById('passCount');
+    const failCount = document.getElementById('failCount');
+    const detailCount = document.getElementById('detailCount');
+    const detailList = document.getElementById('detailList');
+    const backLink = document.getElementById('backLink');
+    const closeLink = document.getElementById('closeLink');
+
+    backLink.href = returnUrl;
+    closeLink.href = returnUrl;
+
+    const passTotal = visibleItems.filter(function (item) {
+      return item.status === 'pass';
+    }).length;
+    const failTotal = visibleItems.length - passTotal;
+    const sortedItems = visibleItems.slice().sort(function (a, b) {
+      if (a.status === b.status) {
+        return 0;
+      }
+      return a.status === 'fail' ? -1 : 1;
+    });
+
+    pageSubtitle.textContent = activeKey === 'all'
+      ? '查看全部文件的通过项与不通过项'
+      : files[activeKey].name;
+    passCount.textContent = passTotal;
+    failCount.textContent = failTotal;
+    detailCount.textContent = '共 ' + visibleItems.length + ' 项';
+
+    detailList.innerHTML = sortedItems.map(function (item) {
+      const statusText = item.status === 'pass' ? '通过' : '不通过';
+      const riskClass = item.risk === '高风险' ? ' high' : item.risk === '中风险' ? ' mid' : '';
+      const riskTag = item.status === 'fail'
+        ? '<span class="chip' + riskClass + '">' + item.risk + '</span>'
+        : '';
+      const remarkItem = item.status === 'fail'
+        ? '<div class="detail-item"><div class="detail-label">发起人-情况说明</div><div class="detail-value">' + item.remark + '</div></div>'
+        : '';
+      return [
+        '<article class="detail-card">',
+          '<div class="detail-card-head">',
+            '<div class="detail-file">' + item.fileName + '</div>',
+            '<div class="detail-status-tags">',
+              '<span class="chip ' + item.status + '">' + statusText + '</span>',
+              riskTag,
+            '</div>',
+          '</div>',
+          '<div class="detail-grid">',
+            '<div class="detail-item"><div class="detail-label">AI检查内容</div><div class="detail-value">' + item.item + '</div></div>',
+            '<div class="detail-item"><div class="detail-label">AI检查结果</div><div class="detail-value">' + item.result + '</div></div>',
+            remarkItem,
+          '</div>',
+        '</article>'
+      ].join('');
+    }).join('');
+  </script>
+</body>
+</html>
